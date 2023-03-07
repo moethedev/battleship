@@ -17,6 +17,7 @@ class Bot:
 
         self.TARGETS = []
         self.POTENTIAL_TARGETS = []
+        self.SUNK_SHIP_COORDINATES = []
 
         data['shot_map'] = self.SHOT_MAP.tolist()
         data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
@@ -47,8 +48,7 @@ class Bot:
             # logging.debug("SHOT_MAP: " + str(self.SHOT_MAP))
             logging.debug("SIMPLE_SHOT_MAP: " + str(self.SIMPLE_SHOT_MAP))
 
-            guess_row, guess_col, self.POTENTIAL_TARGETS = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS,
-                                                                            self.SHOT_MAP)
+            guess_row, guess_col, self.POTENTIAL_TARGETS = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
             fire_position.append([guess_row, guess_col])
 
             self.SHOT_MAP[guess_row][guess_col] = 2
@@ -56,30 +56,15 @@ class Bot:
 
         return fire_position
 
-    def getPotential_targets(self, shot_map):
-        potential_targets = []
-        for j in range(self.boardWidth):
-            for i in range(self.boardHeight):
-                if shot_map[i][j] == 1:
-                    if i > 0 and shot_map[i - 1][j] == 0:
-                        potential_targets.append((i - 1, j))
-                    if i < self.boardHeight - 1 and shot_map[i + 1][j] == 0:
-                        potential_targets.append((i + 1, j))
-                    if j > 0 and shot_map[i][j - 1] == 0:
-                        potential_targets.append((i, j - 1))
-                    if j < self.boardWidth - 1 and shot_map[i][j + 1] == 0:
-                        potential_targets.append((i, j + 1))
-        return potential_targets
-
     def notify(self, session_id, data):
         json_object = self.read_file(session_id)
 
         logging.debug("notify: " + str(data))
 
         # if data['playerId'] == 'Double-L-tmp':
-        shot_map = np.array(json_object['shot_map'])
-        targets = np.array(json_object['targets'])
-        potential_targets = json_object['potential_targets']
+        # shot_map = np.array(json_object['shot_map'])
+        # targets = np.array(json_object['targets'])
+        # potential_targets = json_object['potential_targets']
 
         if data['shots'][0]['status'] == "HIT":
             is_sunk = False
@@ -96,18 +81,18 @@ class Bot:
                     for c in ship['coordinates']:
                         self.SHOT_MAP[c[0]][c[1]] = 2
 
-            self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships,
-                                                                    self.TARGETS, self.POTENTIAL_TARGETS,
-                                                                    self.SHOT_MAP)
-        elif data['shots'][0]['status'] == "MISS":
-            self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+        #     self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships,
+        #                                                             self.TARGETS, self.POTENTIAL_TARGETS,
+        #                                                             self.SHOT_MAP)
+        # elif data['shots'][0]['status'] == "MISS":
+            # self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
 
-        json_object['targets'] = self.TARGETS
-        json_object['shot_map'] = self.SHOT_MAP.tolist()
-        json_object['potential_targets'] = self.POTENTIAL_TARGETS
-        self.save_file(session_id, json.dumps(json_object))
-            
-
+        # json_object['targets'] = self.TARGETS
+        # json_object['shot_map'] = self.SHOT_MAP.tolist()
+        # json_object['potential_targets'] = self.POTENTIAL_TARGETS
+        # self.save_file(session_id, json.dumps(json_object))
+    
+    # -----------------------------------------------------------------------------------------------------
     def game_over(self, session_id, data):
         self.save_file(session_id + "_game_over", json.dumps(data))
 
@@ -116,7 +101,7 @@ class Bot:
         while True:
             guess_row, guess_col = random.randint(0, (self.boardHeight - 1)), random.randint(0, (self.boardWidth - 1))
 
-            if shot_map[guess_row, guess_col] == 0 and (guess_row + guess_col) % 2 == 0:
+            if shot_map[guess_row, guess_col] == 0 and (guess_row + guess_col) % 2 != 0:
                 break
 
         return guess_row, guess_col
@@ -130,9 +115,6 @@ class Bot:
 
         potential_targets = [(target_row + 1, target_col), (target_row, target_col + 1),
                              (target_row - 1, target_col), (target_row, target_col - 1)]
-
-        # if len(targets) > 1:
-        #     potential_targets = self.guest_target(targets, shot_map)
 
         potential_targets = self.calculate_targets(potential_targets, targets, shot_map)
 
@@ -162,15 +144,28 @@ class Bot:
 
     # -----------------------------------------------------------------------------------------------------
     def hunt_target(self, targets, potential_targets, shot_map):
-        # if targets and len(potential_targets) > 0:
         potential_targets = self.getPotential_targets(shot_map)
+
         if len(potential_targets) > 0:
             guess_row, guess_col = potential_targets.pop()
-            print("Target: " + str([guess_row, guess_col]))
             logging.debug("Target: " + str([guess_row, guess_col]))
         else:
             guess_row, guess_col = self.guess_random(shot_map)
-            print("Hunt: " + str([guess_row, guess_col]))
             logging.debug("Hunt: " + str([guess_row, guess_col]))
 
         return guess_row, guess_col, potential_targets
+
+    def getPotential_targets(self, shot_map):
+        potential_targets = []
+        for j in range(self.boardWidth):
+            for i in range(self.boardHeight):
+                if shot_map[i][j] == 1:
+                    if i > 0 and shot_map[i - 1][j] == 0:
+                        potential_targets.append((i - 1, j))
+                    if i < self.boardHeight - 1 and shot_map[i + 1][j] == 0:
+                        potential_targets.append((i + 1, j))
+                    if j > 0 and shot_map[i][j - 1] == 0:
+                        potential_targets.append((i, j - 1))
+                    if j < self.boardWidth - 1 and shot_map[i][j + 1] == 0:
+                        potential_targets.append((i, j + 1))
+        return potential_targets
