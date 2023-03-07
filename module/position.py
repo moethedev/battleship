@@ -24,6 +24,9 @@ class Position:
         mode = random.choice([1, 2, 3])
         mode = 1
 
+        if len(self.ships) > 6:
+            mode = 0
+
         for ship in self.ships:
             for i in range(0, ship['quantity']):
                 is_exist = False
@@ -100,21 +103,23 @@ class Position:
 
     # -----------------------------------------------------------------------------------------------------
     def place_mode(self, row, col, mode, ship_type, direction):
-        if mode == 1:
-            if ship_type == "CV":
+
+        if ship_type == "CV":
                 row = random.randint(1, 19) 
                 col = random.randint(1, 6)
+        if ship_type == "OR":
+                if (direction % 2 != 0) :
+                    col = random.randint(1, 6)
+                else:
+                    row = random.randint(1, 18)
+
+        if mode == 1:
             if ship_type == "DD":
                     row = random.choice([1, 18])
                     col = random.choice([1, 6])
             if ship_type == "CA":
                     row = random.choice([1, 18])
                     col = random.choice([1, 6])
-            if ship_type == "OR":
-                if (direction % 2 != 0) :
-                    col = random.randint(1, 6)
-                else:
-                    row = random.randint(1, 18)
         elif mode == 2:
             if direction == 1: # horizontal
                 if ship_type == "DD":
