@@ -63,6 +63,27 @@ class Position:
 
         positions = self.get_simple_position(direction, row, col, size)
 
+        if ship_type == "OR":
+            if (direction % 2 != 0) :
+                extra_positions = self.get_simple_position(direction, row, col + 1, size)
+            else:
+                extra_positions = self.get_simple_position(direction, row + 1, col, size)
+            positions.extend(extra_positions)
+        elif ship_type == "CV":
+            if (direction % 2 != 0) :
+                if (row - size > 0):
+                    fix_row = row - 2
+                else:
+                    fix_row = row + 1
+                extra_positions = self.get_simple_position(direction, fix_row, col - 1, 1)
+            else:
+                if (col - size > 0):
+                    fix_col = col - 2
+                else:
+                    fix_col = col + 1
+                extra_positions = self.get_simple_position(direction, row - 1, fix_col, 1)
+            positions.extend(extra_positions)
+
         return positions
 
     def get_simple_position(self, direction, row, col, size):
