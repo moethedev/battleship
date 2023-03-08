@@ -81,11 +81,11 @@ class Bot:
                     for c in ship['coordinates']:
                         self.SHOT_MAP[c[0]][c[1]] = 2
 
-        #     self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships,
-        #                                                             self.TARGETS, self.POTENTIAL_TARGETS,
-        #                                                             self.SHOT_MAP)
-        # elif data['shots'][0]['status'] == "MISS":
-            # self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+            self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships,
+                                                                    self.TARGETS, self.POTENTIAL_TARGETS,
+                                                                    self.SHOT_MAP)
+        elif data['shots'][0]['status'] == "MISS":
+            self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
 
         # json_object['targets'] = self.TARGETS
         # json_object['shot_map'] = self.SHOT_MAP.tolist()
@@ -101,8 +101,11 @@ class Bot:
         while True:
             guess_row, guess_col = random.randint(0, (self.boardHeight - 1)), random.randint(0, (self.boardWidth - 1))
 
-            if shot_map[guess_row, guess_col] == 0 and (guess_row + guess_col) % 2 != 0:
-                break
+            if shot_map[guess_row, guess_col] == 0:
+                if (guess_row + guess_col) % 2 != 0:
+                    break
+                else:
+                    break
 
         return guess_row, guess_col
 
