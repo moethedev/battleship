@@ -58,7 +58,7 @@ def play_battleship(mode, positions):
         for s_pos in item['coordinates']:
             ship_map[s_pos[0], s_pos[1]] = 1
 
-    bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
+    bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'], 'test', {})
 
     hit_rate = 0
     shot_map = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
@@ -142,10 +142,10 @@ def demo():
     pos = Position(inviteRequest['ships'])
     positions = pos.generate()
 
-    # rate, simple_shot_map = play_battleship('target', positions)
+    rate, simple_shot_map = play_battleship('target', positions)
 
     pprint.pprint(positions)
-    simple_shot_map = []
+    # simple_shot_map = []
     map.draw(positions, simple_shot_map)
 
 # -----------------------------------------------------------------------------------------------------
@@ -153,12 +153,12 @@ if __name__ == "__main__":
     os.system('clear')
     os.system('echo "" > log.txt')
 
-    shot_map = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
-    bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'], '123', {})
-    guess_row, guess_col = bot.guess_random(shot_map)
-    print(guess_row, guess_col)
+    # shot_map = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
+    # bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'], '123', {})
+    # guess_row, guess_col = bot.guess_random(shot_map)
+    # print(guess_row, guess_col)
     
     # play()
-    # demo()
+    demo()
 
     
