@@ -24,7 +24,7 @@ class Position:
         mode = random.choice([1, 2, 3])
         mode = 1
 
-        if len(self.ships) > 6:
+        if len(self.ships) > 7:
             mode = 0
 
         for ship in self.ships:
@@ -133,6 +133,12 @@ class Position:
                     col = random.randint(1, 6)
                 else:
                     row = random.randint(1, 18)
+        if direction == 1: # horizontal
+                if ship_type == "DD":
+                    row = random.randint(0, 19)
+            else:
+                if ship_type == "DD":
+                    col = random.choice([0, 7])
 
         if mode == 1:
             if ship_type == "DD":
@@ -141,12 +147,5 @@ class Position:
             if ship_type == "CA":
                     row = random.choice([1, 18])
                     col = random.choice([1, 6])
-        elif mode == 2:
-            if direction == 1: # horizontal
-                if ship_type == "DD":
-                    row = random.randint(0, 19)
-            else:
-                if ship_type == "DD":
-                    col = random.choice([0, 7])
 
         return row, col
