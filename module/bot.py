@@ -106,12 +106,14 @@ class Bot:
 
                 if shot_map[guess_row, guess_col] == 0:
                         break
+            else:
+                break
 
         return guess_row, guess_col
 
     def guest_odd_even(self, shot_map):
         guess_row, guess_col = 0, 0
-        for i in range(0, 5):
+        for i in range(0, 10):
             guess_row, guess_col = random.randint(0, (self.boardHeight - 1)), random.randint(0, (self.boardWidth - 1))
 
             if shot_map[guess_row, guess_col] == 0 and (guess_row + guess_col) % 2 != 0:

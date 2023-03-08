@@ -154,7 +154,7 @@ if __name__ == "__main__":
     os.system('echo "" > log.txt')
 
     shot_map = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
-    bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
+    bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'], '123', {})
     guess_row, guess_col = bot.guess_random(shot_map)
     print(guess_row, guess_col)
     
