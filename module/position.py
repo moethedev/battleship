@@ -133,12 +133,13 @@ class Position:
                     col = random.randint(1, 6)
                 else:
                     row = random.randint(1, 18)
+                    
         if direction == 1: # horizontal
-                if ship_type == "DD":
-                    row = random.randint(0, 19)
-            else:
-                if ship_type == "DD":
-                    col = random.choice([0, 7])
+            if ship_type == "DD":
+                row = random.randint(0, 19)
+        else:
+            if ship_type == "DD":
+                col = random.choice([0, 7])
 
         if mode == 1:
             if ship_type == "DD":

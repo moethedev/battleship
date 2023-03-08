@@ -99,15 +99,26 @@ class Bot:
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map):
         while True:
-            guess_row, guess_col = random.randint(0, (self.boardHeight - 1)), random.randint(0, (self.boardWidth - 1))
+            guess_row, guess_col = self.guest_odd_even(shot_map)
+            
+            if [guess_row, guess_col] == [0, 0]:
+                guess_row, guess_col = random.randint(0, (self.boardHeight - 1)), random.randint(0, (self.boardWidth - 1))
 
-            if shot_map[guess_row, guess_col] == 0:
-                if (guess_row + guess_col) % 2 != 0:
-                    break
-                else:
-                    break
+                if shot_map[guess_row, guess_col] == 0:
+                        break
 
         return guess_row, guess_col
+
+    def guest_odd_even(self, shot_map):
+        guess_row, guess_col = 0, 0
+        for i in range(0, 5):
+            guess_row, guess_col = random.randint(0, (self.boardHeight - 1)), random.randint(0, (self.boardWidth - 1))
+
+            if shot_map[guess_row, guess_col] == 0 and (guess_row + guess_col) % 2 != 0:
+                break
+
+        return guess_row, guess_col
+
 
     # -----------------------------------------------------------------------------------------------------
     def target_hit(self, target_row, target_col, is_sunk, ship_hit, targets, potential_targets, shot_map):
